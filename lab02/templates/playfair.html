@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Playfair Cipher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="container">
+        <table class="table">
+            <tr><td style="text-align: center; font-weight: bold; font-size: 25px;">Playfair CIPHER</td></tr>
+            <tr><td style="font-weight: bold; color: blue">ENCRYPTION</td></tr>
+            <tr>
+                <td>
+                    <form method="POST" action="/playfair/encrypt">
+                        <div class="mb-3">
+                            <label class="form-label">Plain text:</label>
+                            <input type="text" class="form-control" name="inputPlainText" placeholder="Input Plain Text" required autofocus value="{{ inputPlainText if inputPlainText else '' }}"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Key:</label>
+                            <input type="text" class="form-control" name="inputKeyPlain" placeholder="Input Key" required value="{{ inputKeyPlain if inputKeyPlain else '' }}"/>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Encrypt</button>
+                        <div class="mb-3">
+                            <label class="form-label">Cipher Text:</label>
+                            <input type="text" class="form-control" name="outputCipherText" placeholder="Cipher Text" readonly value="{{ outputCipherText if outputCipherText else '' }}"/>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+
+            <tr><td style="font-weight: bold; color: blue">DECRYPTION</td></tr>
+            <tr>
+                <td>
+                    <form method="POST" action="/playfair/decrypt">
+                        <div class="mb-3">
+                            <label class="form-label">Cipher text:</label>
+                            <input type="text" class="form-control" name="inputCipherText" placeholder="Input Cipher Text" required value="{{ inputCipherText if inputCipherText else '' }}"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Key:</label>
+                            <input type="text" class="form-control" name="inputKeyCipher" placeholder="Input Key" required value="{{ inputKeyCipher if inputKeyCipher else '' }}"/>
+                        </div>
+                        <button type="submit" class="btn btn-success">Decrypt</button>
+                        <div class="mb-3">
+                            <label class="form-label">Plain Text:</label>
+                            <input type="text" class="form-control" name="outputPlainText" placeholder="Plain Text" readonly value="{{ outputPlainText if outputPlainText else '' }}"/>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+
+            {% if playfairMatrix %}
+            <tr><td style="font-weight: bold; color: green; text-align: center;">Playfair Matrix:</td></tr>
+            <tr>
+                <td>
+                    <table class="table table-bordered text-center">
+                        {% for row in playfairMatrix %}
+                        <tr>
+                            {% for char in row %}
+                            <td>{{ char }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+            {% endif %}
+
+        </table>
+    </div>
+</body>
+</html>

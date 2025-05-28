@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thực hành Bảo mật thông tin nâng cao</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Body Styling for a dark, cinematic, futuristic feel */
+        body {
+            background-color: #0d0d1a; /* Even darker blue/purple background - giữ nguyên để làm nền tối */
+            color: #e0e0e0; /* Light grey text */
+            font-family: 'Inter', sans-serif; /* Modern font, fallback to sans-serif */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Full viewport height */
+            margin: 0;
+            overflow: hidden; /* Prevent scrollbar during initial animations */
+            position: relative; /* For pseudo-elements and canvas positioning */
+        }
+
+        /* Canvas for Code Rain */
+        #matrixCanvas {
+            position: fixed; /* Fixed to viewport */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2; /* Below all other content and pseudo-elements */
+            background-color: rgba(0, 0, 0, 0.1); /* Slight dark overlay for rain */
+        }
+
+        /* Futuristic Grid/Particle Overlay (now above code rain) */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at center, rgba(0,255,0,0.03) 1px, transparent 1px), /* Dots màu xanh lá */
+                radial-gradient(circle at center, rgba(0,255,0,0.03) 1px, transparent 1px);
+            background-size: 40px 40px; /* Adjust grid density */
+            animation: backgroundPulse 15s infinite alternate ease-in-out; /* Subtle background animation */
+            z-index: -1; /* Behind content, above code rain */
+        }
+
+        @keyframes backgroundPulse {
+            0% { background-position: 0 0; opacity: 0.8; }
+            100% { background-position: 40px 40px; opacity: 1; }
+        }
+
+        .container {
+            background-color: rgba(15, 15, 26, 0.9); /* Slightly darker container background with transparency */
+            padding: 40px;
+            border-radius: 20px; /* More rounded corners */
+            border: 1px solid rgba(0, 255, 0, 0.2); /* Subtle border màu xanh lá */
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.4), 0 0 80px rgba(0, 255, 0, 0.2); /* Stronger glow màu xanh lá */
+            max-width: 800px;
+            width: 90%; /* Fluid width */
+            text-align: center;
+            opacity: 0; /* Start hidden for fade-in */
+            transform: translateY(30px) scale(0.95); /* Start slightly below and smaller */
+            animation: fadeInScaleUp 1.2s ease-out forwards; /* Apply new animation */
+            animation-delay: 0.8s; /* Delay container animation */
+            position: relative; /* Ensure it's above the canvas */
+            overflow: hidden; /* For internal glow effects */
+            z-index: 10; /* Ensure container is on top */
+        }
+
+        /* Inner container glow effect */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 25px;
+            background: linear-gradient(45deg, rgba(0,255,0,0.1), rgba(0,255,0,0.0), rgba(0,255,0,0.1)); /* Gradient màu xanh lá */
+            filter: blur(10px);
+            z-index: -1;
+            animation: containerGlow 5s infinite alternate ease-in-out;
+        }
+
+        @keyframes containerGlow {
+            0% { transform: scale(1); opacity: 0.7; }
+            100% { transform: scale(1.02); opacity: 1; }
+        }
+
+
+        /* Logo Styling */
+        .container img {
+            width: 30%;
+            max-width: 200px;
+            height: auto;
+            margin: 0 auto 25px auto;
+            border-radius: 15px; /* More rounded corners for logo */
+            opacity: 0;
+            transform: translateY(-30px) rotateX(15deg); /* Start slightly above and tilted */
+            animation: fadeInSlideDownRotate 1s ease-out forwards;
+            animation-delay: 0.3s; /* Logo appears first */
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); /* Logo glow màu xanh lá */
+        }
+
+        /* Heading Styling */
+        .container h4 {
+            font-family: 'Orbitron', sans-serif; /* Futuristic font for heading */
+            font-weight: 700;
+            font-size: 2.5rem; /* Larger font size */
+            color: #00ff00; /* Màu xanh lá cây nổi bật */
+            text-shadow: 0 0 15px rgba(0, 255, 0, 0.8), 0 0 30px rgba(0, 255, 0, 0.4); /* Stronger text glow màu xanh lá */
+            margin-bottom: 45px;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+            animation-delay: 1.2s; /* Heading appears after logo */
+            letter-spacing: 2px; /* Spacing for futuristic feel */
+        }
+
+        /* List Styling */
+        .container ul {
+            margin-top: 30px;
+            list-style-type: none;
+            padding-left: 0;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+            animation-delay: 1.6s; /* List appears after heading */
+        }
+
+        .container ul li {
+            margin-bottom: 20px; /* More spacing between list items */
+        }
+
+        .container ul li a {
+            color: #aaffaa; /* Màu xanh lá cây nhạt hơn cho liên kết */
+            text-decoration: none;
+            font-size: 1.4rem; /* Larger link text */
+            padding: 12px 25px;
+            border: 2px solid #00ff00; /* Thicker border màu xanh lá */
+            border-radius: 10px; /* More rounded link buttons */
+            display: inline-block;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother transition */
+            box-shadow: 0 0 8px rgba(0, 255, 0, 0.6); /* Initial subtle shadow màu xanh lá */
+            background: linear-gradient(45deg, rgba(0,255,0,0.05), transparent); /* Subtle gradient màu xanh lá */
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        /* Link hover effect - light pulse */
+        .container ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1); /* Giữ màu trắng cho vệt sáng */
+            transform: skewX(-30deg);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: -1;
+        }
+
+        .container ul li a:hover::before {
+            left: 100%;
+        }
+
+        .container ul li a:hover {
+            background-color: #00ff00; /* Nền xanh lá khi hover */
+            color: #0d0d1a; /* Dark text on hover */
+            transform: scale(1.08); /* More pronounced enlarge on hover */
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.9), 0 0 40px rgba(0, 255, 0, 0.6); /* Stronger glow màu xanh lá khi hover */
+            border-color: #00ff00;
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInScaleUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes fadeInSlideDownRotate {
+            from { opacity: 0; transform: translateY(-30px) rotateX(15deg); }
+            to { opacity: 1; transform: translateY(0) rotateX(0deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px;
+                border-radius: 15px;
+            }
+            .container h4 {
+                font-size: 2rem;
+                letter-spacing: 1px;
+            }
+            .container ul li a {
+                font-size: 1.2rem;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+                border-radius: 10px;
+            }
+            .container img {
+                width: 50%;
+                max-width: 150px;
+            }
+            .container h4 {
+                font-size: 1.6rem;
+                margin-bottom: 30px;
+            }
+            .container ul li a {
+                font-size: 1.1rem;
+                padding: 8px 15px;
+                border-width: 1px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+    <div class="container">
+        <img src="https://file1.hutech.edu.vn/file/editor/homepage/stories/hinh34/logo%20CMYK-01.png" alt="hutech">
+        <h4>BÀI THỰC HÀNH BẢO MẬT THÔNG TIN NÂNG CAO</h4>
+        <ul>
+            <li><a href="/caesar">Ceasar Cipher</a></li>
+            <li><a href="/vigenere">Vigenere Cipher</a></li>
+            <li><a href="/railfence">Railfence Cipher</a></li>
+            <li><a href="/playfair">PlayFair Cipher</a></li>
+            <li><a href="/Transposition">Transposition Cipher</a></li>
+        </ul>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+        const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=[]{}|;:,.<>?/~`';
+        const fontSize = 16;
+        const columns = Math.floor(width / fontSize);
+        const drops = [];
+
+        // Initialize drops for each column
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1; // Start at the first row
+        }
+
+        function drawMatrixRain() {
+            // Semi-transparent background to create the trailing effect
+            ctx.fillStyle = 'rgba(13, 13, 26, 0.05)'; // Match body background with transparency
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.fillStyle = '#00ff00'; // Green text for the "code"
+            ctx.font = `${fontSize}px monospace`;
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                ctx.fillText(text, x, y);
+
+                // Send the drop back to the top randomly
+                if (y > height && Math.random() > 0.975) { // Adjusted random factor for density
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+            requestAnimationFrame(drawMatrixRain);
+        }
+
+        // Handle window resizing
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            // Re-calculate columns and re-initialize drops on resize
+            const newColumns = Math.floor(width / fontSize);
+            drops.length = newColumns; // Adjust array length
+            for (let i = 0; i < newColumns; i++) {
+                if (drops[i] === undefined) {
+                    drops[i] = 0;
+                }
+            }
+        });
+
+        // Start the animation
+        drawMatrixRain();
+    </script>
+</body>
+</html>
